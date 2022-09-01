@@ -12,23 +12,23 @@ echo "Creating Influxdb jmeter Database"
 ##Wait until Influxdb Deployment is up and running
 ##influxdb_status=`kubectl get po -n $tenant | grep influxdb-jmeter | awk '{print $2}' | grep Running
 
-influxdb_pod=`kubectl get po -n $tenant | grep influxdb-jmeter | awk '{print $1}'`
+influxdb_pod=`kubectl get po -n $tenant -o name --selector='app=influxdb-jmeter'`
 kubectl exec -ti -n $tenant $influxdb_pod -- influx -execute 'CREATE DATABASE jmeter'
 
 ## Create the influxdb datasource in Grafana
 
 echo "Creating the Influxdb data source"
-grafana_pod=`kubectl get po -n $tenant | grep jmeter-grafana | awk '{print $1}'`
+grafana_pod=`kubectl get po -n $tenant -o name --selector='app=jmeter-grafana'`
 
 ## Make load test script in Jmeter master pod executable
 
 #Get Master pod details
 
-master_pod=`kubectl get po -n $tenant | grep jmeter-master | awk '{print $1}'`
+master_pod=`kubectl get po -n $tenant -o name --selector='jmeter_mode=master'`
 
-kubectl exec -ti -n $tenant $master_pod -- cp -r /load_test /jmeter/load_test
+# kubectl exec -ti -n $tenant $master_pod -- cp -r /load_test /jmeter/load_test
 
-kubectl exec -ti -n $tenant $master_pod -- chmod 755 /jmeter/load_test
+# kubectl exec -ti -n $tenant $master_pod -- chmod 755 /jmeter/load_test
 
 ##kubectl cp $working_dir/influxdb-jmeter-datasource.json -n $tenant $grafana_pod:/influxdb-jmeter-datasource.json
 

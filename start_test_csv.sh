@@ -27,7 +27,7 @@ fi
 
 printf "Copy %s to master\n" "${jmx_dir}.jmx"
 
-master_pod=$(kubectl get po -n "$tenant" | grep jmeter-master | awk '{print $1}')
+master_pod=`kubectl get po -n $tenant -o name --selector='jmeter_mode=master'`
 
 kubectl cp "${jmx_dir}/${jmx_dir}.jmx" -n "$tenant" "$master_pod":/
 
@@ -35,7 +35,7 @@ kubectl cp "${jmx_dir}/${jmx_dir}.jmx" -n "$tenant" "$master_pod":/
 
 printf "Get number of slaves\n"
 
-slave_pods=($(kubectl get po -n "$tenant" | grep jmeter-slave | awk '{print $1}'))
+slave_pods=(`kubectl get po -n $tenant -o name --selector='jmeter_mode=slave'`)
 
 # for array iteration
 slavesnum=${#slave_pods[@]}

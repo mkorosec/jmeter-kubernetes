@@ -26,7 +26,7 @@ echo "Additional parameters for jmeter: $params"
 
 #Get Master pod details
 
-master_pod=`kubectl get po -n $tenant | grep jmeter-master | awk '{print $1}'`
+master_pod=`kubectl get po -n $tenant -o name --selector='jmeter_mode=master'`
 
 kubectl cp "$jmx" -n $tenant "$master_pod:/$test_name"
 
