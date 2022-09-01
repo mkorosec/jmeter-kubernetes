@@ -19,7 +19,7 @@ echo "Current list of namespaces on the kubernetes cluster:"
 
 echo
 
-kubectl get namespaces -o name
+kubectl get namespaces -o jsonpath="{.items[0].metadata.name}"
 
 echo
 
@@ -42,7 +42,7 @@ then
   echo "Current list of namespaces on the kubernetes cluster"
   sleep 2
 
-  kubectl get namespaces -o name
+  kubectl get namespaces -o jsonpath="{.items[0].metadata.name}"
   exit 1
 fi
 

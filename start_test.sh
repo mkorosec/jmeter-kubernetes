@@ -25,11 +25,15 @@ echo "Using test file: $test_name"
 echo "Additional parameters for jmeter: $params"
 
 #Get Master pod details
+master_pod=`kubectl get po -n $tenant -o jsonpath="{.items[0].metadata.name}" --selector='jmeter_mode=master'`
 
-master_pod=`kubectl get po -n $tenant -o name --selector='jmeter_mode=master'`
-
-kubectl cp "$jmx" -n $tenant "$master_pod:/$test_name"
+kubectl cp "$jmx" -n "$tenant" "$master_pod:/$test_name"
 
 ## Echo Starting Jmeter load test
+echo ""
+echo "==="
+echo "If you want to interrupt the test, use 'bash jmeter_stop.sh' to do a clean stop"
+echo "==="
+echo ""
 
 kubectl exec -ti -n $tenant $master_pod -- /bin/bash /load_test "$test_name" $params
